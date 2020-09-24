@@ -1,0 +1,28 @@
+{
+  "name": "vuttr-bossabox-challenge",
+  "version": "1.0.0",
+  "description": "A aplicação é um simples repositório para gerenciar ferramentas com seus respectivos nomes, links, descrições e tags.",
+  "main": "src/index.js",
+  "repository": "https://github.com/CaioStoduto/VUTTR-BossaBox-Challenge",
+  "author": "Caio Stoduto <caiostoduto@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon src/index.js",
+    "test": "jest ."
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "jest": "^26.4.2",
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  }
+}

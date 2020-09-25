@@ -11,6 +11,11 @@
     "dev": "nodemon src/index.js",
     "test": "jest ."
   },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.7"
+  },
   "devDependencies": {
     "eslint": "^7.9.0",
     "eslint-config-standard": "^14.1.1",
@@ -20,9 +25,5 @@
     "eslint-plugin-standard": "^4.0.1",
     "jest": "^26.4.2",
     "nodemon": "^2.0.4"
-  },
-  "dependencies": {
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1"
   }
 }

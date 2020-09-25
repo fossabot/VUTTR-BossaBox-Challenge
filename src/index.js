@@ -1,4 +1,12 @@
 require('dotenv').config()
+require('./utils/database')()
+
+/**
+ * DB_USER
+ * DB_PASS
+ * DB_HOST
+ * DB_NAME
+ */
 
 var express = require('express')
 var app = express()

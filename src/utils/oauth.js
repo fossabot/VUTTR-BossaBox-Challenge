@@ -18,7 +18,7 @@ module.exports = {
         const data = await GoogleOAuth.getToken(code)
         if (data.res.status !== 200) return { err: data.res }
         GoogleOAuth.setCredentials(data.tokens)
-        var oauth2 = google.oauth2({
+        const oauth2 = google.oauth2({
           auth: GoogleOAuth,
           version: 'v2'
         })

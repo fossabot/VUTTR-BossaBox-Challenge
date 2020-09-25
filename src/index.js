@@ -13,14 +13,17 @@ require('./utils/database')()
  * JWT_SECRET
  */
 
-const cookieParser = require('cookie-parser')
 const jwt = require('jsonwebtoken')
+const { resolve } = require('path')
 
 const User = require('./models/user')
 
+var cookieParser = require('cookie-parser')
 var express = require('express')
-var app = express()
 var helmet = require('helmet')
+var app = express()
+
+app.set('public', resolve(__dirname, '../public'))
 
 app.use(helmet())
 app.use(cookieParser(process.env.COOKIES_SECRET))

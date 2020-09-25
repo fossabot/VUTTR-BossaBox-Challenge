@@ -8,8 +8,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node .",
-    "dev": "nodemon src/index.js",
-    "test": "jest ."
+    "dev": "nodemon src/index.js --dev",
+    "test": "jest"
   },
   "dependencies": {
     "cookie-parser": "^1.4.5",
@@ -19,7 +19,8 @@
     "helmet": "^4.1.1",
     "joi": "^17.2.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.10.7"
+    "mongoose": "^5.10.7",
+    "supertest": "^5.0.0"
   },
   "devDependencies": {
     "eslint": "^7.9.0",

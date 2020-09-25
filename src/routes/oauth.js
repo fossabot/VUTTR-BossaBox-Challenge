@@ -3,22 +3,23 @@ const { Google } = require('../utils/oauth')
 const { getOrCreateUser } = require('../utils/misc')
 const jwt = require('jsonwebtoken')
 
-async function auth (loginId, method, req, res) {
-  const userResult = await getOrCreateUser(loginId, 'Google')
-  switch (userResult.status) {
-    case 200 || 201: {
-      const token = jwt.sign({ _id: userResult.user._id }, process.env.JWT_SECRET, { expiresIn: '1d' })
-      res.cookie('auth-token', token, {
-        signed: true,
-        maxAge: 864E5,
-        httpOnly: true
-      })
-      return res.status(userResult.status).redirect('../../')
+function auth (loginId, method, req, res) {
+  getOrCreateUser(loginId, 'Google').then((userResult) => {
+    switch (userResult.status) {
+      case 200 || 201: {
+        const token = jwt.sign({ _id: userResult.user._id }, process.env.JWT_SECRET, { expiresIn: '1d' })
+        res.cookie('auth-token', token, {
+          signed: true,
+          maxAge: 864E5,
+          httpOnly: true
+        })
+        return res.status(userResult.status).redirect('../../')
+      }
+      default: {
+        return res.status(userResult.status).send(`${userResult.statusText}\n\n${tryAgainMessage(req.get('host'))}`).end()
+      }
     }
-    default: {
-      return res.status(userResult.status).send(`${userResult.statusText}\n\n${tryAgainMessage(req.get('host'))}`).end()
-    }
-  }
+  })
 }
 
 function tryAgainMessage (host) {

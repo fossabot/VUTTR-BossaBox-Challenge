@@ -6,10 +6,15 @@ require('./utils/database')()
  * DB_PASS
  * DB_HOST
  * DB_NAME
+ * COOKIES_SIGNATURE
  */
+
+const cookieParser = require('cookie-parser')
 
 var express = require('express')
 var app = express()
+
+app.use(cookieParser(process.env.COOKIES_SIGNATURE))
 
 app.use('/', require('./routes/index'))
 

@@ -40,6 +40,7 @@ app.use('*', async (req, res, next) => {
 
 app.use('/', require('./routes/index'))
 app.use('/oauth', require('./routes/oauth'))
+app.use('/logout', require('./routes/logout'))
 
 const port = process.env.PORT || 3000
 

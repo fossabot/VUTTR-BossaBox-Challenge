@@ -13,11 +13,10 @@ module.exports = {
       access_type: 'offline',
       scope: 'email'
     }),
-    getIdentifier: async (code) => {
+    getLoginIdentifier: async (code) => {
       try {
         const data = await GoogleOAuth.getToken(code)
         if (data.res.status !== 200) return { err: data.res }
-        console.log(data)
         GoogleOAuth.setCredentials(data.tokens)
         var oauth2 = google.oauth2({
           auth: GoogleOAuth,

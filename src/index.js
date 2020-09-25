@@ -14,14 +14,27 @@ require('./utils/database')()
  */
 
 const cookieParser = require('cookie-parser')
+const jwt = require('jsonwebtoken')
+
+const User = require('./models/user')
 
 var express = require('express')
 var app = express()
 
 app.use(cookieParser(process.env.COOKIES_SECRET))
 
-app.use('*', (req, res, next) => {
-  req.user = undefined
+app.use('*', async (req, res, next) => {
+  const authToken = req.signedCookies['auth-token']
+  if (authToken) {
+    try {
+      const verified = jwt.verify(authToken, process.env.JWT_SECRET)
+      if (typeof verified === 'object') {
+        try {
+          req.user = (await User.findById(verified._id)) || undefined
+        } catch (e) { /* User id inválido */ }
+      }
+    } catch (e) { /* JWT Token inválido */ }
+  }
   next()
 })
 

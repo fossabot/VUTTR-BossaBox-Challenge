@@ -20,8 +20,11 @@ const User = require('./models/user')
 
 var express = require('express')
 var app = express()
+var helmet = require('helmet')
 
+app.use(helmet())
 app.use(cookieParser(process.env.COOKIES_SECRET))
+app.use(express.json())
 
 app.use('*', async (req, res, next) => {
   const authToken = req.signedCookies['auth-token']
@@ -39,8 +42,9 @@ app.use('*', async (req, res, next) => {
 })
 
 app.use('/', require('./routes/index'))
-app.use('/oauth', require('./routes/oauth'))
 app.use('/logout', require('./routes/logout'))
+app.use('/oauth', require('./routes/oauth'))
+app.use('/tools', require('./routes/tools'))
 
 const port = process.env.PORT || 3000
 

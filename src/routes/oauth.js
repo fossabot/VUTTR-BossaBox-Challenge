@@ -8,7 +8,11 @@ async function auth (loginId, method, req, res) {
   switch (userResult.status) {
     case 200 || 201: {
       const token = jwt.sign({ _id: userResult.user._id }, process.env.JWT_SECRET, { expiresIn: '1d' })
-      res.cookie('auth-token', token, { signed: true })
+      res.cookie('auth-token', token, {
+        signed: true,
+        maxAge: 864E5,
+        httpOnly: true
+      })
       return res.status(userResult.status).redirect('../../')
     }
     default: {
@@ -33,7 +37,7 @@ router.get('/google', async (req, res) => {
     }
   }
 
-  res.status(400).send(`Por favor, tente novamente usando o link: http://${req.get('host')}`).end()
+  res.status(400).send(tryAgainMessage(req.get('host'))).end()
 })
 
 module.exports = router

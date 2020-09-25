@@ -28,7 +28,7 @@ async function getOrCreateUser (loginIdentifier, loginMethod) {
   } catch (e) {
     return {
       status: 500,
-      err: 'Ocorreu um erro na conexão entre o servidor e a database. Por favor, tente novamente'
+      err: 'Ocorreu um erro na conexão entre o servidor e a database. Por favor, tente novamente.'
     }
   }
 }

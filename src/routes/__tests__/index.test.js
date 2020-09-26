@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-commented-out-tests */
 const { setupDB } = require('../../../test_modules/setup')
 
 setupDB('test0')
@@ -10,14 +9,27 @@ const OAuth = require('../../utils/oauth')
 
 const { generateVerboseRandomUser, invalidUsers } = require('../../../test_modules/misc')
 
-const auths = {}
+const unauthResponse = {}
 Object.keys(OAuth).forEach((key) => {
-  auths[key] = OAuth[key].authUrl
+  unauthResponse[key] = OAuth[key].authUrl
 })
 
 describe('GET /', () => {
-  test('auth-token && user', async () => {
+  test('auth-token && authorized user', async () => {
     const user = await generateVerboseRandomUser()
+
+    const result = await request
+      .get('/')
+      .set('Cookie', [`auth-token=${user.cookie}`])
+
+    if (result.err) throw result.err
+
+    expect(result.status).toEqual(200)
+    expect(result.text.toString()).toEqual('Você está autenticado!')
+  })
+
+  test('auth-token && unauthorized user', async () => {
+    const user = await generateVerboseRandomUser(false)
 
     const result = await request
       .get('/')
@@ -37,7 +49,7 @@ describe('GET /', () => {
     if (result.err) throw result.err
 
     expect(result.status).toEqual(200)
-    expect(result.text.toString()).toEqual(JSON.stringify(auths))
+    expect(result.text.toString()).toEqual(JSON.stringify(unauthResponse))
   })
 
   test('auth-token && !user (valid syntax)', async () => {
@@ -48,7 +60,7 @@ describe('GET /', () => {
     if (result.err) throw result.err
 
     expect(result.status).toEqual(200)
-    expect(result.text.toString()).toEqual(JSON.stringify(auths))
+    expect(result.text.toString()).toEqual(JSON.stringify(unauthResponse))
   })
 
   test('!auth-token && !user', async () => {
@@ -59,7 +71,7 @@ describe('GET /', () => {
     if (result.err) throw result.err
 
     expect(result.status).toEqual(200)
-    expect(result.text.toString()).toEqual(JSON.stringify(auths))
+    expect(result.text.toString()).toEqual(JSON.stringify(unauthResponse))
   })
 
   test('without auth-token Cookie', async () => {
@@ -69,6 +81,6 @@ describe('GET /', () => {
     if (result.err) throw result.err
 
     expect(result.status).toEqual(200)
-    expect(result.text.toString()).toEqual(JSON.stringify(auths))
+    expect(result.text.toString()).toEqual(JSON.stringify(unauthResponse))
   })
 })

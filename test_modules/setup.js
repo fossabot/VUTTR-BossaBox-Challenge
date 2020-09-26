@@ -30,7 +30,7 @@ async function dropAllCollections () {
 }
 
 module.exports = {
-  setupDB (DB_NAME = process.env.DB_NAME) {
+  setupDB (DB_NAME, clearAfterEach = true) {
     // Connect to Mongoose
     beforeAll(async () => {
       const connectionURL = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}/${DB_NAME}?retryWrites=true`
@@ -42,10 +42,12 @@ module.exports = {
       await mongoose.connect(connectionURL, options)
     })
 
-    // Cleans up database between each test
-    afterEach(async () => {
-      await removeAllCollections()
-    })
+    if (clearAfterEach === true) {
+      // Cleans up database between each test
+      afterEach(async () => {
+        await removeAllCollections()
+      })
+    }
 
     // Disconnect Mongoose
     afterAll(async () => {

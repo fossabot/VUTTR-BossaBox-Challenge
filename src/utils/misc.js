@@ -1,5 +1,17 @@
 const User = require('../models/user')
 
+function generateRandomString (length, specialChars = false) {
+  let charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  let retVal = ''
+
+  if (specialChars === true) charset += '!"#$%&\'()*+,-/:;<=>?@[\\]^_`{|}~'
+
+  for (var i = 0, n = charset.length; i < length; ++i) {
+    retVal += charset.charAt(Math.floor(Math.random() * n))
+  }
+  return retVal
+}
+
 async function getOrCreateUser (loginIdentifier, loginMethod) {
   try {
     let user = await User.findOne({ loginIdentifier })
@@ -34,5 +46,6 @@ async function getOrCreateUser (loginIdentifier, loginMethod) {
 }
 
 module.exports = {
-  getOrCreateUser
+  getOrCreateUser,
+  generateRandomString
 }

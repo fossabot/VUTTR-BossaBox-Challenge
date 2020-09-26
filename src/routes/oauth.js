@@ -13,7 +13,16 @@ function auth (loginId, method, req, res) {
           maxAge: 864E5,
           httpOnly: true
         })
-        return res.status(userResult.status).redirect('../../')
+        res.status(userResult.status)
+        switch (userResult.status) {
+          case 200:
+            res.send('Você agora está logado.').end()
+            break
+          case 201:
+            res.send('Você foi cadastrado.').end()
+            break
+        }
+        return
       }
       default: {
         return res.status(userResult.status).send(`${userResult.statusText}\n\nPor favor, tente novamente usando o link: http://${req.get('host')}`).end()

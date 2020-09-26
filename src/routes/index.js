@@ -7,7 +7,7 @@ router.get('/', async (req, res) => {
     Object.keys(OAuth).forEach((key) => {
       auths[key] = OAuth[key].authUrl
     })
-    res.status(200).send(auths).end()
+    res.status(401).send(auths).end()
   } else {
     res.status(200).send('Você está autenticado!').end()
   }

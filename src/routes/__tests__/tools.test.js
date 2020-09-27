@@ -90,7 +90,7 @@ describe('POST /tools', () => {
 })
 
 describe('GET /tools', () => {
-  test('no params', async () => {
+  test('Sem parâmetros', async () => {
     const user = await generateVerboseRandomUser()
 
     const result = await request
@@ -204,7 +204,7 @@ function notLoggedIn (text) {
 }
 
 describe('Auth /tools', () => {
-  test('auth-token && authorized user', async () => {
+  test('auth-token && usuário autorizado', async () => {
     const user = await generateVerboseRandomUser()
 
     const result = await request
@@ -225,7 +225,7 @@ describe('Auth /tools', () => {
     expect(tools).toEqual(toolsTemplate)
   })
 
-  test('auth-token && unauthorized user', async () => {
+  test('auth-token && usuário não autorizado', async () => {
     const user = await generateVerboseRandomUser(false)
 
     const result = await request
@@ -238,7 +238,7 @@ describe('Auth /tools', () => {
     expect(result.text).toEqual('Você está logado, porém você não está autorizado.')
   })
 
-  test('auth-token && !user (invalid syntax)', async () => {
+  test('auth-token && !usuário (sintaxe inválida)', async () => {
     const result = await request
       .get('/tools')
       .set('Cookie', [`auth-token=${invalidUsers.invalidSyntax.cookie}`])
@@ -249,7 +249,7 @@ describe('Auth /tools', () => {
     expect(notLoggedIn(result.text)).toBe(true)
   })
 
-  test('auth-token && !user (valid syntax)', async () => {
+  test('auth-token && !usuário (sintaxe válida)', async () => {
     const result = await request
       .get('/tools')
       .set('Cookie', [`auth-token=${invalidUsers.validSyntax.cookie}`])
@@ -260,7 +260,7 @@ describe('Auth /tools', () => {
     expect(notLoggedIn(result.text)).toBe(true)
   })
 
-  test('!auth-token && !user', async () => {
+  test('!auth-token && !usuário', async () => {
     const result = await request
       .get('/tools')
       .set('Cookie', ['auth-token=aaaaa'])
@@ -271,7 +271,7 @@ describe('Auth /tools', () => {
     expect(notLoggedIn(result.text)).toBe(true)
   })
 
-  test('without auth-token Cookie', async () => {
+  test('sem o Cookie auth-token', async () => {
     const result = await request
       .get('/tools')
 

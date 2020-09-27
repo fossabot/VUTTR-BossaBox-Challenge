@@ -15,7 +15,7 @@ Object.keys(OAuth).forEach((key) => {
 })
 
 describe('GET /', () => {
-  test('auth-token && authorized user', async () => {
+  test('auth-token && usuário autorizado', async () => {
     const user = await generateVerboseRandomUser()
 
     const result = await request
@@ -28,7 +28,7 @@ describe('GET /', () => {
     expect(result.text.toString()).toEqual('Você está autenticado!')
   })
 
-  test('auth-token && unauthorized user', async () => {
+  test('auth-token && usuário não autorizado', async () => {
     const user = await generateVerboseRandomUser(false)
 
     const result = await request
@@ -41,46 +41,46 @@ describe('GET /', () => {
     expect(result.text.toString()).toEqual('Você está autenticado!')
   })
 
-  test('auth-token && !user (invalid syntax)', async () => {
+  test('auth-token && !usuário (sintaxe inválida)', async () => {
     const result = await request
       .get('/')
       .set('Cookie', [`auth-token=${invalidUsers.invalidSyntax.cookie}`])
 
     if (result.err) throw result.err
 
-    expect(result.status).toEqual(200)
+    expect(result.status).toEqual(401)
     expect(result.text.toString()).toEqual(JSON.stringify(unauthResponse))
   })
 
-  test('auth-token && !user (valid syntax)', async () => {
+  test('auth-token && !usuário (sintaxe válida)', async () => {
     const result = await request
       .get('/')
       .set('Cookie', [`auth-token=${invalidUsers.validSyntax.cookie}`])
 
     if (result.err) throw result.err
 
-    expect(result.status).toEqual(200)
+    expect(result.status).toEqual(401)
     expect(result.text.toString()).toEqual(JSON.stringify(unauthResponse))
   })
 
-  test('!auth-token && !user', async () => {
+  test('!auth-token && !usuário', async () => {
     const result = await request
       .get('/')
       .set('Cookie', ['auth-token=aaaaa'])
 
     if (result.err) throw result.err
 
-    expect(result.status).toEqual(200)
+    expect(result.status).toEqual(401)
     expect(result.text.toString()).toEqual(JSON.stringify(unauthResponse))
   })
 
-  test('without auth-token Cookie', async () => {
+  test('sem o Cookie auth-token', async () => {
     const result = await request
       .get('/')
 
     if (result.err) throw result.err
 
-    expect(result.status).toEqual(200)
+    expect(result.status).toEqual(401)
     expect(result.text.toString()).toEqual(JSON.stringify(unauthResponse))
   })
 })

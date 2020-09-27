@@ -24,7 +24,7 @@ app.set('public', resolve(__dirname, '../public'))
 
 app.use(helmet())
 app.use(cookieParser(process.env.COOKIES_SECRET))
-app.use(express.json({ strict: false }))
+app.use(express.json())
 
 app.use('*', async (req, res, next) => {
   const authToken = req.signedCookies['auth-token']

@@ -1,0 +1,340 @@
+FORMAT: 1A
+
+# VUTTR (Very Useful Tools to Remember)
+
+A aplicação é um simples repositório para gerenciar ferramentas com seus respectivos nomes, links, descrições e tags.
+
+### Index [GET /]
+
+Verifica se o usuário está logado e o indica os oauths disponíveis.
+
++ Request Cookie e JWT válidos
+
+    + Headers
+    
+            cookie: auth-token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZmNmMyYTE1ZDU3MzM0NjQ5ZTJjNjkiLCJpYXQiOjE2MDExNDAxODl9.6rhJG3hDOy87ZN8NCqufRb2MVbNeg_xY3pr0ftEz2Tc.jVQ8EiBpS4GZWQgSYJoNU9%2BnEU5W9sLFODc3q5Wvunk
+
++ Response 200 (plain/text)
+
+        Você está autenticado!
+        
++ Request Cookie ou JWT inválido ou sem o auth-token cookie
+
+    + Headers
+        
+            cookie: any
+
+
++ Response 401 (application/json)
+
+        {
+            "Google": "*Google OAuth2 link"
+        }
+
+
+### Logout [GET /logout]
+
+Método de limpar o cookie auth-token, deslogando o usuário.
+
++ Response 200 (plain/text)
+
+
+    + Headers
+
+            set-cookie: ["auth-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"]
+            
+    + Body
+
+            Logged out
+
+
+## OAuth [/oauth/*]
+
+Callback do OAuth de outros serviços.
+
+### Google [GET /oauth/google/?code={code}&scope={scope}]
+
++ Parameters
+    + code: `4%2F4gFuwO_70IjKqKgFl9_Bdoo6jmx7bGNzynSDctLltlfklJ-QOGk-vpDqqtgkc8j4Nw54WpnDsea9ZD8Leqtkrno` (string, required) - Código provido pelo Google para autenticar o usuário com os servidores do Google.
+    + scope: `email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid` (string, required) - Tipo de Scope usado para a autenticação. A aplicação verifica se um dos Scopes foi o email para autenticar o usuário por email.
+
++ Request Callback válido e usuário já cadastrado
+
++ Response 200 (plain/text)
+    
+    + Headers
+    
+            set-cookie: auth-token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZmNmMyYTE1ZDU3MzM0NjQ5ZTJjNjkiLCJpYXQiOjE2MDExNDAxODl9.6rhJG3hDOy87ZN8NCqufRb2MVbNeg_xY3pr0ftEz2Tc.jVQ8EiBpS4GZWQgSYJoNU9%2BnEU5W9sLFODc3q5Wvunk; Max-Age=86400; Path=/; Expires=Sun, 27 Sep 2020 23:33:46 GMT; HttpOnly
+
+    + Body
+    
+            Você agora está logado.
+
++ Request Callback válido e primeira vez logando
+
++ Response 201 (plain/text)
+
+    + Headers
+    
+            set-cookie: auth-token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZmNmMyYTE1ZDU3MzM0NjQ5ZTJjNjkiLCJpYXQiOjE2MDExNDAxODl9.6rhJG3hDOy87ZN8NCqufRb2MVbNeg_xY3pr0ftEz2Tc.jVQ8EiBpS4GZWQgSYJoNU9%2BnEU5W9sLFODc3q5Wvunk; Max-Age=86400; Path=/; Expires=Sun, 27 Sep 2020 23:33:46 GMT; HttpOnly
+    
+    + Body
+    
+            Você foi cadastrado.
+        
++ Request
+
+        Callback Inválido
+
++ Response 201 (plain/text)
+
+        invalid_grant
+
+        Por favor, tente novamente usando o link: http://localhost:3000
+        
+## Tools [/tools]
+
+### Listar todas as tools [GET]
+
++ Request Cookie e JWT válidos
+
+    + Headers
+    
+            cookie: auth-token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZmNmMyYTE1ZDU3MzM0NjQ5ZTJjNjkiLCJpYXQiOjE2MDExNDAxODl9.6rhJG3hDOy87ZN8NCqufRb2MVbNeg_xY3pr0ftEz2Tc.jVQ8EiBpS4GZWQgSYJoNU9%2BnEU5W9sLFODc3q5Wvunk
+
++ Response 200 (application/json)
+
+        [
+          {
+            "tags":[
+              "organization",
+              "planning",
+              "collaboration",
+              "writing",
+              "calendar"
+            ],
+            "title":"Notion",
+            "link":"https://notion.so",
+            "description":"All in one tool to organize teams and ideas. Write, plan, collaborate, and get organized."
+          },
+          {
+            "tags":[
+              "api",
+              "json",
+              "schema",
+              "node",
+              "github",
+              "rest"
+            ],
+            "title":"json-server",
+            "link":"https://github.com/typicode/json-server",
+            "description":"Fake REST API based on a json schema. Useful for mocking and creating APIs for front-end devs to consume in coding challenges."
+          },
+          {
+            "tags":[
+              "web",
+              "framework",
+              "node",
+              "http2",
+              "https",
+              "localhost"
+            ],
+            "title":"fastify",
+            "link":"https://www.fastify.io/",
+            "description":"Extremely fast and simple, low-overhead web framework for NodeJS. Supports HTTP2."
+          }
+        ]
+        
++ Request Cookie ou JWT inválidos
+
+    + Headers
+    
+            cookie: any
+
++ Response 401 (plain/text)
+
+        Você não está logado.
+    
+        Por favor, se autentique usando o link: "http://localhost:3000"
+        
+        Aviso: a autenticação usa Cookies (auth-token)
+
++ Request Cookie e JWT válidos, porém usuário não autorizado (server-side)
+
+    + Headers
+    
+            cookie: auth-token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZmNmMyYTE1ZDU3MzM0NjQ5ZTJjNjkiLCJpYXQiOjE2MDExNDAxODl9.6rhJG3hDOy87ZN8NCqufRb2MVbNeg_xY3pr0ftEz2Tc.jVQ8EiBpS4GZWQgSYJoNU9%2BnEU5W9sLFODc3q5Wvunk
+
++ Response 401 (plain/text)
+
+        Você está logado, porém você não está autorizado.
+
+### Pesquisar tools pela tag [GET /?tag={tag}]
+
++ Parameters
+    + tag: `node` (string, optional) - Tag usada para encontrar todas as tools que tem tal tag
+
++ Request Cookie e JWT válidos
+
+    + Headers
+    
+            cookie: auth-token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZmNmMyYTE1ZDU3MzM0NjQ5ZTJjNjkiLCJpYXQiOjE2MDExNDAxODl9.6rhJG3hDOy87ZN8NCqufRb2MVbNeg_xY3pr0ftEz2Tc.jVQ8EiBpS4GZWQgSYJoNU9%2BnEU5W9sLFODc3q5Wvunk
+
++ Response 200 (application/json)
+
+        [
+          {
+            "tags":[
+              "api",
+              "json",
+              "schema",
+              "node",
+              "github",
+              "rest"
+            ],
+            "title":"json-server",
+            "link":"https://github.com/typicode/json-server",
+            "description":"Fake REST API based on a json schema. Useful for mocking and creating APIs for front-end devs to consume in coding challenges."
+          },
+          {
+            "tags":[
+              "web",
+              "framework",
+              "node",
+              "http2",
+              "https",
+              "localhost"
+            ],
+            "title":"fastify",
+            "link":"https://www.fastify.io/",
+            "description":"Extremely fast and simple, low-overhead web framework for NodeJS. Supports HTTP2."
+          }
+        ]
+        
++ Request Cookie ou JWT inválidos
+
+    + Headers
+    
+            cookie: any
+
++ Response 401 (plain/text)
+
+        Você não está logado.
+    
+        Por favor, se autentique usando o link: "http://localhost:3000"
+        
+        Aviso: a autenticação usa Cookies (auth-token)
+
++ Request Cookie e JWT válidos, porém usuário não autorizado (server-side)
+
+    + Headers
+    
+            cookie: auth-token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZmNmMyYTE1ZDU3MzM0NjQ5ZTJjNjkiLCJpYXQiOjE2MDExNDAxODl9.6rhJG3hDOy87ZN8NCqufRb2MVbNeg_xY3pr0ftEz2Tc.jVQ8EiBpS4GZWQgSYJoNU9%2BnEU5W9sLFODc3q5Wvunk
+
++ Response 401 (plain/text)
+
+        Você está logado, porém você não está autorizado.
+
+### Criar nova tool [POST]
+
++ Request Cookie e JWT válidos
+
+    + Headers
+    
+            cookie: auth-token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZmNmMyYTE1ZDU3MzM0NjQ5ZTJjNjkiLCJpYXQiOjE2MDExNDAxODl9.6rhJG3hDOy87ZN8NCqufRb2MVbNeg_xY3pr0ftEz2Tc.jVQ8EiBpS4GZWQgSYJoNU9%2BnEU5W9sLFODc3q5Wvunk
+            Content-Type: application/json
+
+    + Body
+    
+            {
+                "tags":[
+                  "organization",
+                  "planning",
+                  "collaboration",
+                  "writing",
+                  "calendar"
+                ],
+                "title":"Notion",
+                "link":"https://notion.so",
+                "description":"All in one tool to organize teams and ideas. Write, plan, collaborate, and get organized."
+            }
+
++ Response 201 (application/json)
+
+        {
+            "tags":[
+                "organization",
+                "planning",
+                "collaboration",
+                "writing",
+                "calendar"
+            ],
+            "_id": "5f6fd8dafb351821e4e5b5f6",
+            "title": "Notion",
+            "link": "https://notion.so",
+            "description": "All in one tool to organize teams and ideas. Write, plan, collaborate, and get organized.",
+            "createdAt": "2020-09-27T00:12:10.080Z",
+            "updatedAt": "2020-09-27T00:12:10.080Z",
+            "__v": 0
+        }
+        
++ Request Cookie ou JWT inválidos
+
+    + Headers
+    
+            cookie: any
+
++ Response 401 (plain/text)
+
+        Você não está logado.
+    
+        Por favor, se autentique usando o link: "http://localhost:3000"
+        
+        Aviso: a autenticação usa Cookies (auth-token)
+
++ Request Cookie e JWT válidos, porém usuário não autorizado (server-side)
+
+    + Headers
+    
+            cookie: auth-token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZmNmMyYTE1ZDU3MzM0NjQ5ZTJjNjkiLCJpYXQiOjE2MDExNDAxODl9.6rhJG3hDOy87ZN8NCqufRb2MVbNeg_xY3pr0ftEz2Tc.jVQ8EiBpS4GZWQgSYJoNU9%2BnEU5W9sLFODc3q5Wvunk
+
++ Response 401 (plain/text)
+
+        Você está logado, porém você não está autorizado.
+
+### Deletar tool pelo id [DELETE /{toolId}]
+
++ Parameters
+    + toolId: `5f6fd8dafb351821e4e5b5f6` (string, required) - ToolID da tool que será deletada
+
++ Request Cookie e JWT válidos
+
+    + Headers
+    
+            cookie: auth-token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZmNmMyYTE1ZDU3MzM0NjQ5ZTJjNjkiLCJpYXQiOjE2MDExNDAxODl9.6rhJG3hDOy87ZN8NCqufRb2MVbNeg_xY3pr0ftEz2Tc.jVQ8EiBpS4GZWQgSYJoNU9%2BnEU5W9sLFODc3q5Wvunk
+
++ Response 204
+        
++ Request Cookie ou JWT inválidos
+
+    + Headers
+    
+            cookie: any
+
++ Response 401 (plain/text)
+
+        Você não está logado.
+    
+        Por favor, se autentique usando o link: "http://localhost:3000"
+        
+        Aviso: a autenticação usa Cookies (auth-token)
+
++ Request Cookie e JWT válidos, porém usuário não autorizado (server-side)
+
+    + Headers
+    
+            cookie: auth-token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjZmNmMyYTE1ZDU3MzM0NjQ5ZTJjNjkiLCJpYXQiOjE2MDExNDAxODl9.6rhJG3hDOy87ZN8NCqufRb2MVbNeg_xY3pr0ftEz2Tc.jVQ8EiBpS4GZWQgSYJoNU9%2BnEU5W9sLFODc3q5Wvunk
+
++ Response 401 (plain/text)
+
+        Você está logado, porém você não está autorizado.
